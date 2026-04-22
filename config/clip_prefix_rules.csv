@@ -1,0 +1,29 @@
+kind,site_id,url_substring,author_match,title_match,abbrev,format
+site,youtube,youtube.com,,,,author_date
+site,arxiv,arxiv.org,,,,arxiv_id
+site,nature,nature.com,,Nature,,code_date
+site,Science,science.org,,Science,,code_date
+site,techcrunch,techcrunch.com,,TC,,code_date
+site,venturebeat,venturebeat.com,,VB,,code_date
+site,stratechery,stratechery.com,,Stratechery,,code_date
+site,sharptext,sharptext.net,,Sharp Text,,code_date
+author,youtube,,Invest Like The Best,,ILTB,
+author,youtube,,The Information,,TITV,
+author,youtube,,TITV,,TITV,
+author,youtube,,TBPN,,TBPN,
+author,youtube,,Sharp Tech Podcast,,Sharp Tech,
+author,youtube,,Bloomberg Technology,,BT,
+author,youtube,,Bloomberg Podcasts,Everybody's Business,EB,
+author,youtube,,Bloomberg Podcasts,Odd Lots,Odd Lots,
+author,youtube,,Bloomberg Podcasts,,Bloomberg,
+author,youtube,,Core Memory Podcast,,Core Memory Podcast,
+author,youtube,,Core Memory,,Core,
+author,youtube,,Dwarkesh Patel,,Dwarkesh,
+author,youtube,,a16z,,a16z,
+author,youtube,,a16z Deep Dives,,a16z deepdive,
+author,youtube,,All-In Podcast,,All-In,
+author,youtube,,lexteam,,Lex Fridman,
+author,youtube,,Lex Fridman,,Lex Fridman,
+author,youtube,,Y Combinator,,YC,
+author,youtube,,Matt Talks Tech,,MTT,
+author,youtube,,This Week in Startups,,Startups,
