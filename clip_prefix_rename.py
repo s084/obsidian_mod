@@ -106,11 +106,43 @@ def parse_frontmatter(text: str) -> tuple[dict[str, Any] | None, str]:
         return None, text
 
 
+def meta_ci_get(meta: dict[str, Any], *names: str) -> Any:
+    """YAML のキー大文字小文字差・別名の最初の有効値（空文字は除く）。"""
+    if not meta or not names:
+        return None
+    lower_to_key: dict[str, str] = {}
+    for k in meta:
+        if isinstance(k, str):
+            lower_to_key[k.lower()] = k
+    for n in names:
+        k = lower_to_key.get(n.lower())
+        if k is None:
+            continue
+        v = meta[k]
+        if v is None:
+            continue
+        if isinstance(v, str) and not v.strip():
+            continue
+        if isinstance(v, list) and not v:
+            continue
+        return v
+    return None
+
+
 def get_source_url(meta: dict[str, Any]) -> str:
-    for key in ("source", "url", "link", "canonical"):
-        v = meta.get(key)
-        if isinstance(v, str) and v.strip():
-            return v.strip()
+    v = meta_ci_get(
+        meta,
+        "source",
+        "url",
+        "link",
+        "canonical",
+        "href",
+        "page-url",
+        "page_url",
+        "original_url",
+    )
+    if isinstance(v, str) and v.strip():
+        return v.strip()
     return ""
 
 
@@ -204,6 +236,26 @@ def published_to_yyyymmdd(published: Any) -> str | None:
     return None
 
 
+def first_code_date_value(meta: dict[str, Any]) -> Any:
+    """code_date 用: 記事日らしさの高い順に 1 つ選ぶ（フロントマターキー差吸収）。"""
+    for key in (
+        "published",
+        "publication",
+        "pubdate",
+        "date",
+        "article_published_time",
+        "publish_time",
+        "published_time",
+        "publish-time",
+        "created",
+        "modified",
+    ):
+        v = meta_ci_get(meta, key)
+        if v is not None and v != "":
+            return v
+    return None
+
+
 def extract_arxiv_id(text: str) -> str | None:
     m = ARXIV_ID_RE.search(text)
     if m:
@@ -264,7 +316,8 @@ def build_prefix(
 ) -> str | None:
     fmt = site.format
     if fmt == "code_date":
-        d = published_to_yyyymmdd(meta.get("published") or meta.get("date") or meta.get("created"))
+        raw = first_code_date_value(meta)
+        d = published_to_yyyymmdd(raw)
         if not d or not site.abbrev:
             return None
         return f"{site.abbrev} {d}_ "
@@ -297,7 +350,9 @@ def build_prefix(
         ab = resolve_youtube_abbrev(rules, auth, get_title(meta))
         if not ab:
             return None
-        d = published_to_yyyymmdd(meta.get("published") or meta.get("date") or meta.get("uploadDate"))
+        d = published_to_yyyymmdd(
+            meta_ci_get(meta, "published", "date", "uploaddate", "uploadDate")
+        )
         if not d:
             return None
         return f"{ab} {d}_ "

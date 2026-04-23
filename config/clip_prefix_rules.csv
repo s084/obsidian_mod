@@ -1,12 +1,12 @@
 kind,site_id,url_substring,author_match,title_match,abbrev,format
 site,youtube,youtube.com,,,,author_date
 site,arxiv,arxiv.org,,,,arxiv_id
-site,nature,nature.com,,Nature,,code_date
-site,Science,science.org,,Science,,code_date
-site,techcrunch,techcrunch.com,,TC,,code_date
-site,venturebeat,venturebeat.com,,VB,,code_date
-site,stratechery,stratechery.com,,Stratechery,,code_date
-site,sharptext,sharptext.net,,Sharp Text,,code_date
+site,nature,nature.com,,,Nature,code_date
+site,Science,science.org,,,Science,code_date
+site,techcrunch,techcrunch.com,,,TC,code_date
+site,venturebeat,venturebeat.com,,,VB,code_date
+site,stratechery,stratechery.com,,,Stratechery,code_date
+site,sharptext,sharptext.net,,,Sharp Text,code_date
 author,youtube,,Invest Like The Best,,ILTB,
 author,youtube,,The Information,,TITV,
 author,youtube,,TITV,,TITV,
