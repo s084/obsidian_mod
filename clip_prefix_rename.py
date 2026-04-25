@@ -21,8 +21,9 @@ DEFAULT_VAULT = Path(r"C:\Users\yohm\iCloudDrive\iCloud~md~obsidian\My_vault")
 DEFAULT_CLIPPINGS = "Clippings"
 DEFAULT_CONFIG = Path(__file__).resolve().parent / "config" / "clip_prefix_rules.csv"
 
+# 閉じ --- の直後は改行までに限定（\s* は改行も食うため、本文先頭の空行が「FM 側」に取り込まれて挿入位置がずれる）
 FRONTMATTER_RE = re.compile(
-    r"^---\s*\r?\n(.*?)\r?\n---\s*(\r?\n|$)",
+    r"^---\s*\r?\n(.*?)\r?\n---[ \t]*(\r?\n|$)",
     re.DOTALL,
 )
 
@@ -418,7 +419,27 @@ def sanitize_stem(s: str) -> str:
     return s
 
 
+def prepend_template_header(vault: Path, dest: Path, title_stem: str) -> None:
+    """____Template/header.md を YAML フロントマター直後に挿入。{{title}} は拡張子なしファイル名で置換。"""
+    header_path = vault / "____Template" / "header.md"
+    if not header_path.is_file():
+        print(
+            f"[warn] header テンプレなし（追記をスキップ）: {header_path}",
+            file=sys.stderr,
+        )
+        return
+    snippet = header_path.read_text(encoding="utf-8").replace("{{title}}", title_stem)
+    full = dest.read_text(encoding="utf-8", errors="replace")
+    m = FRONTMATTER_RE.match(full)
+    if m:
+        after_fm = full[m.end() :]
+        dest.write_text(full[: m.end()] + snippet + after_fm, encoding="utf-8")
+    else:
+        dest.write_text(snippet + full, encoding="utf-8")
+
+
 def run(
+    vault: Path,
     clippings: Path,
     config: Path,
     dry_run: bool,
@@ -492,6 +513,7 @@ def run(
             print(f"[dry-run] {path.name!r} -> {new_name!r}")
         else:
             path.rename(dest)
+            prepend_template_header(vault, dest, new_stem)
             print(f"[重命名] {path.name!r} -> {new_name!r}")
         n_ok += 1
 
@@ -536,8 +558,9 @@ def main() -> int:
         help="リネームせず表示のみ",
     )
     args = p.parse_args()
-    clippings = (args.vault / args.clippings).resolve()
-    return run(clippings, args.config.resolve(), args.dry_run)
+    vault = args.vault.resolve()
+    clippings = (vault / args.clippings).resolve()
+    return run(vault, clippings, args.config.resolve(), args.dry_run)
 
 
 if __name__ == "__main__":
