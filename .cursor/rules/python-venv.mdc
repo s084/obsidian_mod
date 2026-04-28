@@ -1,0 +1,16 @@
+---
+description: This repo’s Python uses the project .venv (uv); run and verify with it.
+alwaysApply: true
+---
+
+# Python: 仮想環境を前提にする
+
+このワークスペースの Python は **リポジトリ直下の `.venv`** を前提にする。
+
+- **依存関係**: `pyproject.toml` を正とし、同期は **`uv sync`**（この venv は pip 無しのことがある）。
+- **実行・検証**: システムの `python` / pyenv より、次を優先する。
+  - `.\.venv\Scripts\python.exe <script.py> [args...]`（Windows）
+  - または `.\.venv\Scripts\Activate.ps1` 後に `python ...`
+- **エージェントがターミナルでスクリプトを走らせるとき**も、上記 `.venv` のインタープリタを使う。
+
+新しいスクリプトを追加するときも同じ interpreter で動くようにし、標準ライブラリ以外は `pyproject.toml` の `dependencies` に追記する。
